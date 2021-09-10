@@ -30,9 +30,10 @@ while True:
     face_locations, face_names = sfr.detect_known_faces(frame)
     for face_loc, name in zip(face_locations, face_names):
         y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
-
+        deltaY = abs(y1-y2)//2
+        deltaX = abs(x1-x2)//2
         try:
-            roi = frame[y1-80: y2+50, x1-50: x2+50]
+            roi = frame[y1-deltaY: y2+deltaY, x1-deltaX: x2+deltaX]
             croped = Image.fromarray(roi)
             cropedFrame.append(croped)
         except:
