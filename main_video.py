@@ -19,6 +19,7 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 # dlib detector
 detector = dlib.get_frontal_face_detector()
 
+color = (0, 0, 200)
 
 while True:
     ret, frame = cap.read()
@@ -37,12 +38,14 @@ while True:
         except:
             pass
 
+
         # cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 4)
 
     cv2.imshow("Frame", frame)
     
     if len(cropedFrame) == 2:
+        color = (0, 255, 0)
         for i , img in enumerate(cropedFrame):
             img.save("test" + str(i) + ".jpg")
 
@@ -63,16 +66,18 @@ while True:
             try:
                 x0 = landmarks0.part(n).x
                 y0 = landmarks0.part(n).y
-                cv2.circle(image0 , (x0, y0), 2, (255, 0, 0), -1)
+                cv2.circle(image0 , (x0, y0), 2, (240, 248, 255), -1)
 
                 x1 = landmarks1.part(n).x
                 y1 = landmarks1.part(n).y
-                cv2.circle(image1 , (x1, y1), 2, (255, 0, 0), -1)
+                cv2.circle(image1 , (x1, y1), 2, (240, 248, 255), -1)
             except:
                 pass
 
         cv2.imshow("img 0", image0)
         cv2.imshow("img 1", image1)
+    else:
+        color = (0, 0, 200)
 
     key = cv2.waitKey(1)
     if key == 27:
