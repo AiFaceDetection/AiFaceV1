@@ -44,7 +44,7 @@ class SimpleFacerec:
         # Find all the faces and face encodings in the current frame of video
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
-        face_locations = face_recognition.face_locations(rgb_small_frame)
+        face_locations = face_recognition.face_locations(rgb_small_frame, model="cnn")
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
         face_names = []
