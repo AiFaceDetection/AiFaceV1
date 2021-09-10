@@ -47,7 +47,8 @@ while True:
     if len(cropedFrame) == 2:
         color = (0, 255, 0)
         for i , img in enumerate(cropedFrame):
-            img.save("test" + str(i) + ".jpg")
+            resized_img = img.resize((450, 500))
+            resized_img.save("test" + str(i) + ".jpg")
 
         image0 = cv2.imread("test0.jpg")
         image1 = cv2.imread("test1.jpg")
