@@ -44,7 +44,7 @@ while True:
             pass
 
 
-        cv2.putText(frame, str(x) + ", A: " + a,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+        cv2.putText(frame, str(x) + ", A: " + a + ", Name: " + name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 4)
 
     cv2.imshow("Frame", frame)
