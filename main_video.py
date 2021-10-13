@@ -1,3 +1,4 @@
+from typing import Counter
 import cv2
 from simple_facerec import SimpleFacerec
 from PIL import Image
@@ -5,6 +6,8 @@ import cv2
 import face_recognition
 import os
 import dlib
+import time
+import numpy as np
 
 # Encode faces from a folder
 sfr = SimpleFacerec()
@@ -20,6 +23,17 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 detector = dlib.get_frontal_face_detector()
 
 color = (0, 0, 200)
+
+x = 0
+
+def testTime():
+    time1 = time.perf_counter()
+    time2 = time.perf_counter()
+
+    delta = time2 - time1
+    while delta < 5.5:
+        time2 = time.perf_counter()
+        delta = time2 - time1
 
 while True:
     ret, frame = cap.read()
@@ -40,48 +54,79 @@ while True:
             pass
 
 
-        # cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+        cv2.putText(frame, str(x),(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 4)
 
     cv2.imshow("Frame", frame)
-    
+
     if len(cropedFrame) == 2:
-        color = (0, 255, 0)
-        for i , img in enumerate(cropedFrame):
-            resized_img = img.resize((460, 500))
-            resized_img.save("test" + str(i) + ".jpg")
+
+        x += 1
+        print(x)
+
+        color = (255, 225, 0)
+
+        if (x > 50):
+            color = (0, 255, 0)
+        
+        if (x == 50):
+            for i , img in enumerate(cropedFrame):
+                # resized_img = img.resize((460, 500))
+                # resized_img.save("test" + str(i) + ".jpg")
+
+                img.save("test" + str(i) + ".jpg")
 
             # img.save("test" + str(i) + ".jpg")
 
-        image0 = cv2.imread("test0.jpg")
-        image1 = cv2.imread("test1.jpg")
-        gray0 = cv2.cvtColor(image0, cv2.COLOR_BGR2GRAY)
-        gray1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+            image0 = cv2.imread("test0.jpg")
+            image1 = cv2.imread("test1.jpg")
+            # gray0 = cv2.cvtColor(image0, cv2.COLOR_BGR2GRAY)
+            # gray1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
 
-        face0 = detector(gray0, 1) #change frame size
-        for face in face0:
-            landmarks0 = predictor(gray0, face)
-
-        face1 = detector(gray1, 2) #change frame size
-        for face in face1:
-            landmarks1 = predictor(gray1, face)
-
-        for n in range(0, 68):
+            #test encoding
+            gray0 = cv2.cvtColor(image0, cv2.COLOR_BGR2RGB)
+            gray1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
             try:
-                x0 = landmarks0.part(n).x
-                y0 = landmarks0.part(n).y
-                cv2.circle(image0 , (x0, y0), 2, (240, 248, 255), -1)
-
-                x1 = landmarks1.part(n).x
-                y1 = landmarks1.part(n).y
-                cv2.circle(image1 , (x1, y1), 2, (240, 248, 255), -1)
+                img_encoding1 = face_recognition.face_encodings(gray0)[0]
+                img_encoding2 = face_recognition.face_encodings(gray1)[0]
             except:
                 pass
+            result = face_recognition.compare_faces([img_encoding1], img_encoding2)
+            print("Result: ", result)
 
-        cv2.imshow("img 0", image0)
-        cv2.imshow("img 1", image1)
-    else:
+            face0 = detector(gray0, 1) #change frame size
+            for face in face0:
+                landmarks0 = predictor(gray0, face)
+
+            face1 = detector(gray1, 2) #change frame size
+            for face in face1:
+                landmarks1 = predictor(gray1, face)
+
+            for n in range(0, 68):
+                try:
+                    x0 = landmarks0.part(n).x
+                    y0 = landmarks0.part(n).y
+                    cv2.circle(image0 , (x0, y0), 2, (240, 248, 255), -1)
+
+                    x1 = landmarks1.part(n).x
+                    y1 = landmarks1.part(n).y
+                    cv2.circle(image1 , (x1, y1), 2, (240, 248, 255), -1)
+                except:
+                    pass
+        
+            cv2.imshow("img 0", image0)
+            cv2.imshow("img 1", image1)
+        
+    elif len(cropedFrame) == 1:
+        x = 0
         color = (0, 0, 200)
+
+    else:
+        try:
+            os.remove("test0.jpg")
+            os.remove("test1.jpg")
+        except:
+            pass
 
     key = cv2.waitKey(1)
     if key == 27:
@@ -89,7 +134,10 @@ while True:
 
 cap.release()
 
-os.remove("test0.jpg")
-os.remove("test1.jpg")
+try:
+    os.remove("test0.jpg")
+    os.remove("test1.jpg")
+except:
+    pass
 
 cv2.destroyAllWindows()
