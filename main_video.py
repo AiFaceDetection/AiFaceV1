@@ -6,8 +6,6 @@ import cv2
 import face_recognition
 import os
 import dlib
-import time
-import numpy as np
 
 # Encode faces from a folder
 sfr = SimpleFacerec()
@@ -25,15 +23,7 @@ detector = dlib.get_frontal_face_detector()
 color = (0, 0, 200)
 
 x = 0
-
-def testTime():
-    time1 = time.perf_counter()
-    time2 = time.perf_counter()
-
-    delta = time2 - time1
-    while delta < 5.5:
-        time2 = time.perf_counter()
-        delta = time2 - time1
+a = ""
 
 while True:
     ret, frame = cap.read()
@@ -54,7 +44,7 @@ while True:
             pass
 
 
-        cv2.putText(frame, str(x),(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+        cv2.putText(frame, str(x) + ", A: " + a,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 4)
 
     cv2.imshow("Frame", frame)
@@ -91,7 +81,10 @@ while True:
                 img_encoding2 = face_recognition.face_encodings(gray1)[0]
             except:
                 pass
+            # img_encoding1 = face_recognition.face_encodings(gray0)[0]
+            # img_encoding2 = face_recognition.face_encodings(gray1)[0]
             result = face_recognition.compare_faces([img_encoding1], img_encoding2)
+            a = str(result)
             print("Result: ", result)
 
             face0 = detector(gray0, 1) #change frame size
@@ -119,6 +112,7 @@ while True:
         
     elif len(cropedFrame) == 1:
         x = 0
+        a = ""
         color = (0, 0, 200)
 
     else:
