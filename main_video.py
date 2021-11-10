@@ -14,6 +14,8 @@ sfr.load_encoding_images("images/")
 # Load Camera
 cap = cv2.VideoCapture(0)
 
+cap.set(3,1920)
+
 # dlib predictor
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
@@ -56,10 +58,10 @@ while True:
 
         color = (255, 225, 0)
 
-        if (x > 50):
+        if (x > 15):
             color = (0, 255, 0)
         
-        if (x == 50):
+        if (x == 15):
             for i , img in enumerate(cropedFrame):
                 # resized_img = img.resize((460, 500))
                 # resized_img.save("test" + str(i) + ".jpg")
@@ -87,28 +89,28 @@ while True:
             a = str(result)
             print("Result: ", result)
 
-            face0 = detector(gray0, 1) #change frame size
-            for face in face0:
-                landmarks0 = predictor(gray0, face)
+            # face0 = detector(gray0, 1) #change frame size
+            # for face in face0:
+            #     landmarks0 = predictor(gray0, face)
 
-            face1 = detector(gray1, 2) #change frame size
-            for face in face1:
-                landmarks1 = predictor(gray1, face)
+            # face1 = detector(gray1, 2) #change frame size
+            # for face in face1:
+            #     landmarks1 = predictor(gray1, face)
 
-            for n in range(0, 68):
-                try:
-                    x0 = landmarks0.part(n).x
-                    y0 = landmarks0.part(n).y
-                    cv2.circle(image0 , (x0, y0), 2, (240, 248, 255), -1)
+            # for n in range(0, 68):
+            #     try:
+            #         x0 = landmarks0.part(n).x
+            #         y0 = landmarks0.part(n).y
+            #         cv2.circle(image0 , (x0, y0), 2, (240, 248, 255), -1)
 
-                    x1 = landmarks1.part(n).x
-                    y1 = landmarks1.part(n).y
-                    cv2.circle(image1 , (x1, y1), 2, (240, 248, 255), -1)
-                except:
-                    pass
+            #         x1 = landmarks1.part(n).x
+            #         y1 = landmarks1.part(n).y
+            #         cv2.circle(image1 , (x1, y1), 2, (240, 248, 255), -1)
+            #     except:
+            #         pass
         
-            cv2.imshow("img 0", image0)
-            cv2.imshow("img 1", image1)
+            # cv2.imshow("img 0", image0)
+            # cv2.imshow("img 1", image1)
         
     elif len(cropedFrame) == 1:
         x = 0
